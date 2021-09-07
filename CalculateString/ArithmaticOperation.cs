@@ -43,23 +43,31 @@ namespace CalculateString
             s = "";
             foreach (string op in OperationOrder)
             {
-                while (arr.IndexOf(op) > -1)
+                 try
                 {
-                    int operatorIndex = arr.IndexOf(op);
-                    decimal digitBeforeOperator = Convert.ToDecimal(arr[operatorIndex - 1]);
-                    decimal digitAfterOperator = 0;
-                    if (arr[operatorIndex + 1].ToString() == "-")
+                    while (arr.IndexOf(op) > -1)
                     {
-                        arr.RemoveAt(operatorIndex + 1);
-                        digitAfterOperator = Convert.ToDecimal(arr[operatorIndex + 1]) * -1;
+                        int operatorIndex = arr.IndexOf(op);
+                        decimal digitBeforeOperator = Convert.ToDecimal(arr[operatorIndex - 1]);
+                        decimal digitAfterOperator = 0;
+                        if (arr[operatorIndex + 1].ToString() == "-")
+                        {
+                            arr.RemoveAt(operatorIndex + 1);
+                            digitAfterOperator = Convert.ToDecimal(arr[operatorIndex + 1]) * -1;
+                        }
+                        else
+                        {
+                            digitAfterOperator = Convert.ToDecimal(arr[operatorIndex + 1]);
+                        }
+                        arr[operatorIndex] = CalculateByOperator(digitBeforeOperator, digitAfterOperator, op);
+                        arr.RemoveAt(operatorIndex - 1);
+                        arr.RemoveAt(operatorIndex);
                     }
-                    else
-                    {
-                        digitAfterOperator = Convert.ToDecimal(arr[operatorIndex + 1]);
-                    }
-                    arr[operatorIndex] = CalculateByOperator(digitBeforeOperator, digitAfterOperator, op);
-                    arr.RemoveAt(operatorIndex - 1);
-                    arr.RemoveAt(operatorIndex);
+                }
+                catch(Exception ex)
+                {
+                    throw new IndexOutOfRangeException(ex.Message);
+                    throw new ArithmeticException(ex.Message);
                 }
             }
             return Convert.ToDecimal(arr[0]);
